@@ -1,3 +1,4 @@
+// Are you sure that ticks_per_rev should be used in the variable declaration for ticks_per_inches?
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
