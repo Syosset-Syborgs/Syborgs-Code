@@ -18,7 +18,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 /*
  * Syborgs 10696 Autonomous Code
  * Purpose: create the route for the robot during the 30-second Autonomous period
- * Authors: Emily Goldman ,Harish Varadarajan and Tony Zheng Yu
+ * Authors: Emily Goldman, Harish Varadarajan and Tony Zheng Yu
  * Iteration 2: Basic Routing with Encoders (Computer Vision coming soon)
  */
 
