@@ -9,27 +9,26 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 /*
-*in ticks
-*1440 ticks per 360 deg rotation
-*motor.setTargetPosition(ticks);
-*motors used: mechnum
-*
+ *in ticks
+ *1440 ticks per 360 deg rotation
+ *motor.setTargetPosition(ticks);
+ *motors used: mechnum
 */
 
 /*
-* Syborgs 10696 Autonomous Code
-* Purpose: create the route for the robot during the 30-second Autonomous period
-* Authors: Harish Varadarajan and Tony Zheng Yu
-* Iteration 2: Basic Routing with Encoders (Computer Vision coming soon)
-*/
+ * Syborgs 10696 Autonomous Code
+ * Purpose: create the route for the robot during the 30-second Autonomous period
+ * Authors: Emily Goldman ,Harish Varadarajan and Tony Zheng Yu
+ * Iteration 2: Basic Routing with Encoders (Computer Vision coming soon)
+ */
 
 public class Autonomous extends LinearOpMode {
-       /*
-       hardware to map:
-       * DcMotor - Front Left, Front Right, Rear Left, Rear Right
-       * DcMotor - Left Intake and Right Intake
-       * ARM - DcMotor Elevator, CRServo Drop Intake and Clamp
-       */
+    /*
+    hardware to map:
+    * DcMotor - Front Left, Front Right, Rear Left, Rear Right
+    * DcMotor - Left Intake and Right Intake
+    * ARM - DcMotor Elevator, CRServo Drop Intake and Clamp
+    */
     private ElapsedTime runtime = new ElapsedTime();
     // declare motors for mapping
     private static DcMotor frontLeftMotor, frontRightMotor, rearLeftMotor, rearRightMotor;
@@ -41,8 +40,8 @@ public class Autonomous extends LinearOpMode {
     private static final int wheelRadius = 3, length = 18, width = 18, ticksPerRev = 1440;
     private static final double ticksPerInches = (ticksPerRev)/(2 * Math.PI * wheelRadius), turnRadius = Math.sqrt(Math.pow((double) length / 2, 2) + Math.pow((double) width / 2,2 )), ticksPerDegree = ticksPerRev/360;
     private static final double circumference = (2 * Math.PI * turnRadius);
-    @Override
-    private void init () {
+
+    private void mapHardware () {
         // map motors
         frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeft");
         frontRightMotor = hardwareMap.get(DcMotor.class, "frontRight");
@@ -62,67 +61,55 @@ public class Autonomous extends LinearOpMode {
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         rearRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
-    private void drive (double power, int inch) {
-        //drive forward/backward
-        frontLeftMotor.setTargetPosition((int) ticksPerInches * inch);
-        rearLeftMotor.setTargetPosition((int) ticksPerInches * inch);
-        frontRightMotor.setTargetPosition((int) ticksPerInches * inch);
-        rearRightMotor.setTargetPosition((int) ticksPerInches * inch);
-        frontLeftMotor.setPower(power);
-        frontRightMotor.setPower(power);
-        rearRightMotor.setPower(power);
-        rearLeftMotor.setPower(power);
-        while (frontLeftMotor.isBusy() || frontRightMotor.isBusy() || rearLeftMotor.isBusy() || rearRightMotor.isBusy());
-        frontLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-        rearRightMotor.setPower(0);
-        rearLeftMotor.setPower(0);
-    }
-    private void turnLeft(int deg) {
-        frontLeftMotor.setTargetPosition((-deg/360) * ((int) circumference));
-        rearLeftMotor.setTargetPosition((-deg/360) * ((int) circumference));
-        frontRightMotor.setTargetPosition((-deg/360) * ((int) circumference));
-        rearRightMotor.setTargetPosition((-deg/360) * ((int) circumference));
-        // turn left IN PLACE
-        frontLeftMotor.setPower(-1);
-        frontRightMotor.setPower(1);
-        rearRightMotor.setPower(1);
-        rearLeftMotor.setPower(-1);
-        while (frontLeftMotor.isBusy() || frontRightMotor.isBusy() || rearLeftMotor.isBusy() || rearRightMotor.isBusy());
-        frontLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-        rearRightMotor.setPower(0);
-        rearLeftMotor.setPower(0);
-    }
-    private void turnRight(int deg) {
-        frontLeftMotor.setTargetPosition((deg/360) * ((int) circumference));
-        rearLeftMotor.setTargetPosition((deg/360) * ((int) circumference));
-        frontRightMotor.setTargetPosition((deg/360) * ((int) circumference));
-        rearRightMotor.setTargetPosition((deg/360) * ((int) circumference));
-        // turn right IN PLACE
-        frontLeftMotor.setPower(1);
-        rearLeftMotor.setPower(1);
-        frontRightMotor.setPower(-1);
-        rearRightMotor.setPower(-1);
-        while (frontLeftMotor.isBusy() || frontRightMotor.isBusy() || rearLeftMotor.isBusy() || rearRightMotor.isBusy());
-        frontLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-        rearLeftMotor.setPower(0);
-        rearRightMotor.setPower(0);
-    }
-    private void STOP() {
-        frontLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-        rearLeftMotor.setPower(0);
-        rearRightMotor.setPower(0);
-        frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rearLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rearRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        dropIntake.setPower(0);
-        clamp.setPower(0);
-        LHook.setPosition(0);
-        RHook.setPosition(0);
+    private void drive (double power, int inchOrDeg, String isInchOrDeg) {
+        //drive forward/backward (negative inches is driving backward)
+        if (isInchOrDeg.equals("inch")) {
+            frontLeftMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            rearLeftMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            frontRightMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            rearRightMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            frontLeftMotor.setPower(power);
+            frontRightMotor.setPower(power);
+            rearRightMotor.setPower(power);
+            rearLeftMotor.setPower(power);
+            while (frontLeftMotor.isBusy() || frontRightMotor.isBusy() || rearLeftMotor.isBusy() || rearRightMotor.isBusy());
+            frontLeftMotor.setPower(0);
+            frontRightMotor.setPower(0);
+            rearRightMotor.setPower(0);
+            rearLeftMotor.setPower(0);
+        }
+        else if (isInchOrDeg.equals("leftDegree")){
+            frontLeftMotor.setTargetPosition((-inchOrDeg/360) * ((int) circumference));
+            rearLeftMotor.setTargetPosition((-inchOrDeg/360) * ((int) circumference));
+            frontRightMotor.setTargetPosition((-inchOrDeg/360) * ((int) circumference));
+            rearRightMotor.setTargetPosition((-inchOrDeg/360) * ((int) circumference));
+            // turn left IN PLACE
+            frontLeftMotor.setPower(-power);
+            frontRightMotor.setPower(power);
+            rearRightMotor.setPower(power);
+            rearLeftMotor.setPower(-power);
+            while (frontLeftMotor.isBusy() || frontRightMotor.isBusy() || rearLeftMotor.isBusy() || rearRightMotor.isBusy());
+            frontLeftMotor.setPower(0);
+            frontRightMotor.setPower(0);
+            rearRightMotor.setPower(0);
+            rearLeftMotor.setPower(0);
+        }
+        else if (isInchOrDeg.equals("rightDegree")){
+            frontLeftMotor.setTargetPosition((inchOrDeg/360) * ((int) circumference));
+            rearLeftMotor.setTargetPosition((inchOrDeg/360) * ((int) circumference));
+            frontRightMotor.setTargetPosition((inchOrDeg/360) * ((int) circumference));
+            rearRightMotor.setTargetPosition((inchOrDeg/360) * ((int) circumference));
+            // turn right IN PLACE
+            frontLeftMotor.setPower(power);
+            frontRightMotor.setPower(-power);
+            rearRightMotor.setPower(-power);
+            rearLeftMotor.setPower(power);
+            while (frontLeftMotor.isBusy() || frontRightMotor.isBusy() || rearLeftMotor.isBusy() || rearRightMotor.isBusy());
+            frontLeftMotor.setPower(0);
+            frontRightMotor.setPower(0);
+            rearRightMotor.setPower(0);
+            rearLeftMotor.setPower(0);
+        }
     }
     //initialize
     @Override
@@ -146,42 +133,41 @@ public class Autonomous extends LinearOpMode {
             //unclamping just to be safe
             clamp.setPower(-1);
             // driving to stone
-            drive(0.6, 30);
+            drive(0.6, 30, "inch");
             // getting the stone
             dropIntake.setPower(-0.5);
             clamp.setPower(1);
             // facing alliance bridge
-            turnRight(90);
-            drive(0.6, 121);
+            drive(0.6, 90, "rightDegree");
+            drive(0.6, 121, "inch");
             // facing foundation
-            turnLeft(90);
+            drive(0.6, 90, "leftDegree");
             LHook.setPosition(0.5);
             RHook.setPosition(0.5);
-            drive(-0.6, -4);
+            drive(-0.6, -4, "inch");
             // facing toward landing zone
-            turnRight(90);
-            drive(0.6, 9);
+            drive(0.6, 90, "rightDegrees");
+            drive(0.6, 9, "inch");
             //unhooking and placing block on foundation
             LHook.setPosition(0);
             RHook.setPosition(0);
             clamp.setPower(-1);
             // crossing alliance bridge
-            drive(-0.6, -116);
-            turnLeft(90);
+            drive(-0.6, -116, "inch");
+            drive(0.6, 90, "leftDegree");
             //getting the second block
-            drive(0.6, 25);
+            drive(0.6, 25, "inch");
             clamp.setPower(1);
             // facing toward foundation
-            turnRight(90);
+            drive(0.6, 90, "rightDegrees");
             dropIntake.setPower(-0.6);
-            drive(0.6, 121);
+            drive(0.6, 121, "inch");
             // get the block on top of the foundation
             dropIntake.setPower(0.4);
             clamp.setPower(-1);
             dropIntake.setPower(-0.4);
             //park under alliance bridge
-            drive(-0.6, -65);
-            STOP();
+            drive(-0.6, -65, "inch");
             idle();
         }
     }
