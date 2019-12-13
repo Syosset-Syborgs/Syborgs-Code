@@ -41,8 +41,8 @@ public class Autonomous extends LinearOpMode {
     private static final int wheelRadius = 3, length = 18, width = 18, ticksPerRev = 1440;
     private static final double ticksPerInches = (ticksPerRev)/(2 * Math.PI * wheelRadius), turnRadius = Math.sqrt(Math.pow((double) length / 2, 2) + Math.pow((double) width / 2,2 )), ticksPerDegree = ticksPerRev/360;
     private static final double circumference = (2 * Math.PI * turnRadius);
-
-    private void mapHardware () {
+    @Override
+    private void init () {
         // map motors
         frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeft");
         frontRightMotor = hardwareMap.get(DcMotor.class, "frontRight");
