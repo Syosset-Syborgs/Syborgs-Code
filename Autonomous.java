@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
  *1440 ticks per 360 deg rotation
  *motor.setTargetPosition(ticks);
  *motors used: mechnum
-*/
+ */
 
 /*
  * Syborgs 10696 Autonomous Code
@@ -26,19 +26,19 @@ public class Autonomous extends LinearOpMode {
     /*
     hardware to map:
     * DcMotor - Front Left, Front Right, Rear Left, Rear Right
-    * DcMotor - Left Intake and Right Intake
+    * DcMotor - Left Intake and Right Intake (unknown status)
     * ARM - DcMotor Elevator, CRServo Drop Intake and Clamp
     */
     private ElapsedTime runtime = new ElapsedTime();
     // declare motors for mapping
     private static DcMotor frontLeftMotor, frontRightMotor, rearLeftMotor, rearRightMotor;
-    private static DcMotor LIntake, RIntake;
-    private static DcMotor elevator;
+//    private static DcMotor LIntake, RIntake;
+//    private static DcMotor elevator;
     private static CRServo dropIntake, clamp;
     private static Servo LHook, RHook;
     //encoder values
     private static final int wheelRadius = 3, length = 18, width = 18, ticksPerRev = 1440;
-    private static final double ticksPerInches = (ticksPerRev)/(2 * Math.PI * wheelRadius), turnRadius = Math.sqrt(Math.pow((double) length / 2, 2) + Math.pow((double) width / 2,2 )), ticksPerDegree = ticksPerRev/360;
+    private static final double ticksPerInches = (ticksPerRev)/(2 * Math.PI * wheelRadius), turnRadius = Math.sqrt(Math.pow((double) length / 2, 2) + Math.pow((double) width / 2,2 ));
     private static final double circumference = (2 * Math.PI * turnRadius);
 
     private void mapHardware () {
@@ -48,9 +48,9 @@ public class Autonomous extends LinearOpMode {
         rearLeftMotor = hardwareMap.get(DcMotor.class, "rearLeft");
         rearRightMotor = hardwareMap.get(DcMotor.class, "rearRight");
         // map intakes and arm
-        LIntake = hardwareMap.get(DcMotor.class, "leftIntake");
-        RIntake = hardwareMap.get(DcMotor.class, "rightIntake");
-        elevator = hardwareMap.get(DcMotor.class, "elevator");
+//        LIntake = hardwareMap.get(DcMotor.class, "leftIntake");
+//        RIntake = hardwareMap.get(DcMotor.class, "rightIntake");
+//        elevator = hardwareMap.get(DcMotor.class, "elevator");
         dropIntake = hardwareMap.get(CRServo.class, "dropIntake");
         clamp = hardwareMap.get(CRServo.class, "clamp");
         LHook = hardwareMap.get(Servo.class, "leftHook");
@@ -139,7 +139,7 @@ public class Autonomous extends LinearOpMode {
             clamp.setPower(1);
             // facing alliance bridge
             drive(0.6, 90, "rightDegree");
-            drive(0.6, 121, "inch");
+            drive(0.6, 96, "inch");
             // facing foundation
             drive(0.6, 90, "leftDegree");
             LHook.setPosition(0.5);
@@ -153,15 +153,15 @@ public class Autonomous extends LinearOpMode {
             RHook.setPosition(0);
             clamp.setPower(-1);
             // crossing alliance bridge
-            drive(-0.6, -116, "inch");
+            drive(-0.6, -90, "inch");
             drive(0.6, 90, "leftDegree");
             //getting the second block
             drive(0.6, 25, "inch");
             clamp.setPower(1);
             // facing toward foundation
-            drive(0.6, 90, "rightDegrees");
+            drive(0.6, 90, "rightDegree");
             dropIntake.setPower(-0.6);
-            drive(0.6, 121, "inch");
+            drive(0.6, 90, "inch");
             // get the block on top of the foundation
             dropIntake.setPower(0.4);
             clamp.setPower(-1);
