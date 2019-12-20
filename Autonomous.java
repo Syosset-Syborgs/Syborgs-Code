@@ -32,7 +32,7 @@ public class Autonomous extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     // declare motors for mapping
     private static DcMotor frontLeftMotor, frontRightMotor, rearLeftMotor, rearRightMotor;
-//    private static DcMotor LIntake, RIntake;
+    //    private static DcMotor LIntake, RIntake;
 //    private static DcMotor elevator;
     private static CRServo dropIntake, clamp;
     private static Servo LHook, RHook;
@@ -41,26 +41,6 @@ public class Autonomous extends LinearOpMode {
     private static final double ticksPerInches = (ticksPerRev)/(2 * Math.PI * wheelRadius), turnRadius = Math.sqrt(Math.pow((double) length / 2, 2) + Math.pow((double) width / 2,2 ));
     private static final double circumference = (2 * Math.PI * turnRadius);
 
-    private void mapHardware () {
-        // map motors
-        frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeft");
-        frontRightMotor = hardwareMap.get(DcMotor.class, "frontRight");
-        rearLeftMotor = hardwareMap.get(DcMotor.class, "rearLeft");
-        rearRightMotor = hardwareMap.get(DcMotor.class, "rearRight");
-        // map intakes and arm
-//        LIntake = hardwareMap.get(DcMotor.class, "leftIntake");
-//        RIntake = hardwareMap.get(DcMotor.class, "rightIntake");
-//        elevator = hardwareMap.get(DcMotor.class, "elevator");
-        dropIntake = hardwareMap.get(CRServo.class, "dropIntake");
-        clamp = hardwareMap.get(CRServo.class, "clamp");
-        LHook = hardwareMap.get(Servo.class, "leftHook");
-        RHook = hardwareMap.get(Servo.class, "rightHook");
-
-        frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        rearLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        rearRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-    }
     private void drive (double power, int inchOrDeg, String isInchOrDeg) {
         //drive forward/backward (negative inches is driving backward)
         if (isInchOrDeg.equals("inch")) {
@@ -110,11 +90,31 @@ public class Autonomous extends LinearOpMode {
             rearRightMotor.setPower(0);
             rearLeftMotor.setPower(0);
         }
+        else {
+            idle();
+        }
     }
     //initialize
     @Override
     public void runOpMode() {
-        mapHardware();
+        // map motors
+        frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeft");
+        frontRightMotor = hardwareMap.get(DcMotor.class, "frontRight");
+        rearLeftMotor = hardwareMap.get(DcMotor.class, "rearLeft");
+        rearRightMotor = hardwareMap.get(DcMotor.class, "rearRight");
+        // map intakes and arm
+//        LIntake = hardwareMap.get(DcMotor.class, "leftIntake");
+//        RIntake = hardwareMap.get(DcMotor.class, "rightIntake");
+//        elevator = hardwareMap.get(DcMotor.class, "elevator");
+        dropIntake = hardwareMap.get(CRServo.class, "dropIntake");
+        clamp = hardwareMap.get(CRServo.class, "clamp");
+        LHook = hardwareMap.get(Servo.class, "leftHook");
+        RHook = hardwareMap.get(Servo.class, "rightHook");
+
+        frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        rearLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        rearRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // run encoders for motors
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -126,10 +126,11 @@ public class Autonomous extends LinearOpMode {
         frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rearLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rearRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
+        telemetry.addData("Status: ", "Initializing");
         waitForStart();
         runtime.reset();
         while (opModeIsActive()) {
+            telemetry.addData("Status: ", "Initialized");
             //unclamping just to be safe
             clamp.setPower(-1);
             // driving to stone
