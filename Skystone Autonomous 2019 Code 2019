@@ -12,7 +12,7 @@ public class Autonomous extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     // declare motors for mapping
     private static DcMotor frontLeftMotor, frontRightMotor, rearLeftMotor, rearRightMotor;
-    private static DcMotor arm, elevator;
+    private static DcMotor arm, elevator, elevator2;
     private static Servo LHook, RHook, clamp;
     //encoder values
     private static final int wheelRadius = 3, length = 18, width = 18, ticksPerRev = 1440;
@@ -110,7 +110,8 @@ public class Autonomous extends LinearOpMode {
         rearLeftMotor = hardwareMap.get(DcMotor.class, "rearLeft");
         rearRightMotor = hardwareMap.get(DcMotor.class, "rearRight");
         // map arm
-        elevator = hardwareMap.get(DcMotor.class, "elevator");
+        elevator = hardwareMap.get(DcMotor.class, "E1");
+        elevator2 = hardwareMap.get(DcMotor.class, "E2");
         arm = hardwareMap.get(DcMotor.class, "arm");
         clamp = hardwareMap.get(Servo.class, "clamp");
         LHook = hardwareMap.get(Servo.class, "leftHook");
