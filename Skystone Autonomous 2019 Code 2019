@@ -18,9 +18,9 @@ public class Autonomous extends LinearOpMode {
     private static final int wheelRadius = 3, length = 18, width = 18, ticksPerRev = 1440;
     private static final double ticksPerInches = (ticksPerRev)/(2 * Math.PI * wheelRadius), turnRadius = Math.sqrt(Math.pow((double) length / 2, 2) + Math.pow((double) width / 2,2 ));
     private static final double circumference = (2 * Math.PI * turnRadius);
-    private void drive (double power, int inchOrDeg, String isInchOrDeg) {
+    private void drive (double power, int inchOrDeg, String isInchOrDegStrafe) {
         /* drive forward/backward (negative inches is driving backward) */
-        if (isInchOrDeg.equals("inch")) {
+        if (isInchOrDegStrafe.equals("inch")) {
             frontLeftMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
             rearLeftMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
             frontRightMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
@@ -35,7 +35,7 @@ public class Autonomous extends LinearOpMode {
             rearLeftMotor.setPower(0);
             rearRightMotor.setPower(0);
         }
-        else if (isInchOrDeg.equals("leftDegree")){
+        else if (isInchOrDegStrafe.equals("leftDegree")){
             frontLeftMotor.setTargetPosition((-inchOrDeg/360) * ((int) circumference));
             rearLeftMotor.setTargetPosition((-inchOrDeg/360) * ((int) circumference));
             frontRightMotor.setTargetPosition((-inchOrDeg/360) * ((int) circumference));
@@ -51,7 +51,7 @@ public class Autonomous extends LinearOpMode {
             rearLeftMotor.setPower(0);
             rearRightMotor.setPower(0);
         }
-        else if (isInchOrDeg.equals("rightDegree")){
+        else if (isInchOrDegStrafe.equals("rightDegree")){
             frontLeftMotor.setTargetPosition((inchOrDeg/360) * ((int) circumference));
             rearLeftMotor.setTargetPosition((inchOrDeg/360) * ((int) circumference));
             frontRightMotor.setTargetPosition((inchOrDeg/360) * ((int) circumference));
@@ -59,6 +59,36 @@ public class Autonomous extends LinearOpMode {
             // turn right IN PLACE
             frontLeftMotor.setPower(power);
             frontRightMotor.setPower(-power);
+            rearRightMotor.setPower(-power);
+            rearLeftMotor.setPower(power);
+            while (frontLeftMotor.isBusy() || frontRightMotor.isBusy() || rearLeftMotor.isBusy() || rearRightMotor.isBusy());
+            frontLeftMotor.setPower(0);
+            frontRightMotor.setPower(0);
+            rearLeftMotor.setPower(0);
+            rearRightMotor.setPower(0);
+        }
+        else if (isInchOrDegStrafe.equals("strafe")) {
+            frontLeftMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            rearLeftMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            frontRightMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            rearRightMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            frontLeftMotor.setPower(power);
+            frontRightMotor.setPower(-power);
+            rearRightMotor.setPower(power);
+            rearLeftMotor.setPower(-power);
+            while (frontLeftMotor.isBusy() || frontRightMotor.isBusy() || rearLeftMotor.isBusy() || rearRightMotor.isBusy());
+            frontLeftMotor.setPower(0);
+            frontRightMotor.setPower(0);
+            rearLeftMotor.setPower(0);
+            rearRightMotor.setPower(0);
+        }
+        else if (isInchOrDegStrafe.equals("strafeRight")) {
+            frontLeftMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            rearLeftMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            frontRightMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            rearRightMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            frontLeftMotor.setPower(-power);
+            frontRightMotor.setPower(power);
             rearRightMotor.setPower(-power);
             rearLeftMotor.setPower(power);
             while (frontLeftMotor.isBusy() || frontRightMotor.isBusy() || rearLeftMotor.isBusy() || rearRightMotor.isBusy());
@@ -114,8 +144,10 @@ public class Autonomous extends LinearOpMode {
             drive(0.6, 45, "inch");
             LHook.setPosition(0);
             RHook.setPosition(0);
+            drive(0.6, 10, "strafe");
             drive(0.6, 180, "rightDegree");
             drive(0.6, 35, "inch");
+            drive(0.6, 10, "strafeRight");
             LHook.setPosition(1);
             RHook.setPosition(1);
             drive(0.6, 90, "rightDegree");
