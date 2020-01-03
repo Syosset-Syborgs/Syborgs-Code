@@ -8,6 +8,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 public class Autonomous extends LinearOpMode {
+    /**
+     * Syborgs 10696 Autonomous Code 2020
+     * Authors: Harish Varadarajan, Emily Goldman, Tony Zheng Yu
+     * Purpose: autonomous program for FTC Skystone
+     * Iteration 5
+     */
     private ElapsedTime runtime = new ElapsedTime();
     // declare motors for mapping
     private static DcMotor frontLeftMotor, frontRightMotor, rearLeftMotor, rearRightMotor;
