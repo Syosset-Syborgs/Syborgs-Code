@@ -23,6 +23,13 @@ public class Autonomous extends LinearOpMode {
     private static final int wheelRadius = 3, length = 18, width = 18, ticksPerRev = 1440;
     private static final double ticksPerInches = (ticksPerRev)/(2 * Math.PI * wheelRadius), turnRadius = Math.sqrt(Math.pow((double) length / 2, 2) + Math.pow((double) width / 2,2 ));
     private static final double circumference = (2 * Math.PI * turnRadius);
+    private void riseArm(double power, long seconds) {
+        elevator1.setPower(power);
+        elevator2.setPower(power);
+        sleep(seconds * 1000);
+        elevator1.setPower(0);
+        elevator2.setPower(0);
+    }
     private void drive (double power, int inchOrDeg, String isInchOrDeg) {
         /* drive forward/backward (negative inches is driving backward) */
         if (isInchOrDeg.equals("inchForward")) {
@@ -100,7 +107,8 @@ public class Autonomous extends LinearOpMode {
         drive(1, 90, "leftDegree");
         //cross alliance bridge and drop block onto foundation (assuming other team moved foundation to parking zone)
         drive(0.6, 54, "inchForward");
-        elevator1.setPower(0.3);
+        riseArm(0.3, 3);
+        // put elevator2
         clamp.setPosition(0.8);
         //park under alliance bridge
         drive(-0.6, 26, "inchForward");
@@ -133,7 +141,7 @@ public class Autonomous extends LinearOpMode {
         drive(1, 90, "rightDegree");
         //cross alliance bridge and drop block onto foundation (assuming other team moved foundation to parking zone)
         drive(0.6, 54, "inchForward");
-        elevator1.setPower(0.3);
+        riseArm(0.3, 3);
         clamp.setPosition(0.8);
         //park under alliance bridge
         drive(-0.6, 26, "inchForward");
@@ -179,6 +187,14 @@ public class Autonomous extends LinearOpMode {
         rearRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         elevator1.setDirection(DcMotorSimple.Direction.REVERSE);
         elevator2.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        //brake when power is 0
+        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rearLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rearRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        elevator1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        elevator2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // run encoders for motors
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
