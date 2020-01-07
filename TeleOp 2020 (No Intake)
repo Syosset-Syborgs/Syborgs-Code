@@ -131,7 +131,7 @@ public class TeleOp extends OpMode
         BR.setPower(RY - LT + RT);
 
         //Controller 2 inputs
-        clamp.setPower(-gamepad2.right_stick_y);
+        clamp.setPosition(-gamepad2.right_stick_y);
         elevator.setPower(-gamepad2.left_stick_y);
 
         //Intake control
