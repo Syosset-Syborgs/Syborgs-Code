@@ -1,18 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
-
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Autonomous", group="Syborgs 10696")
 public class Autonomous extends LinearOpMode {
     /**
      * Syborgs 10696 Autonomous Code 2020
      * Authors: Harish Varadarajan, Emily Goldman, Tony Zheng Yu
      * Purpose: autonomous program for FTC Skystone
-     * Iteration 5
+     * Iteration 5 (revised and split strategies)
      */
     private ElapsedTime runtime = new ElapsedTime();
     // declare motors for mapping
@@ -213,7 +213,10 @@ public class Autonomous extends LinearOpMode {
         telemetry.update();
         while (opModeIsActive()) {
             telemetry.clearAll();
-
+            if (gamepad1.a) { Red1(); }
+            else if (gamepad1.b) { Red2(); }
+            else if (gamepad1.y) { Blue1(); }
+            else if (gamepad1.x) { Blue2(); }
         }
     }
 }
