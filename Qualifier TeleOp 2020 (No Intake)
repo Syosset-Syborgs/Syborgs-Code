@@ -138,16 +138,16 @@ public class TeleOp extends OpMode
         if(gamepad2.a)
         {
             elevator.setPower(1);
-            elevator.setPower(1);
+          
             elevator2.setPower(1);
-            elevator2.setPower(1);
+            
         }
         else
         {
             elevator.setPower(0);
-            elevator.setPower(0);
+          
             elevator2.setPower(0);
-            elevator2.setPower(0);
+            
         }
 
         //Small movements with the Arm Controller's dpad; useful for minor adjustments
