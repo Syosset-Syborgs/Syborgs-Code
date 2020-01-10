@@ -116,6 +116,7 @@ public class moveFoundation_Autonomous extends LinearOpMode {
         //unclamp - just to be safe - and then drive toward and hook foundation
         LHook.setPosition(0.25);
         RHook.setPosition(0.25);
+        clamp.setPosition(1);
         drive(0.4, 6, "inchForward");
         LHook.setPosition(1);
         RHook.setPosition(1);
