@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class moveFoundation extends LinearOpMode {
+public class moveFoundation_Autonomous extends LinearOpMode {
     /**
      * Syborgs 10696 Autonomous Strategy 2: move foundation 2020
      * Authors: Harish Varadarajan, Emily Goldman, Tony Zheng Yu, Rohan Ghotra (computer vision)
