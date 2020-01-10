@@ -1,18 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Autonomous", group="Syborgs 10696")
-public class Autonomous extends LinearOpMode {
+public class deliverBlocks_Autonomous extends LinearOpMode {
     /**
      * Syborgs 10696 Autonomous Code 2020
-     * Authors: Harish Varadarajan, Emily Goldman, Tony Zheng Yu
+     * Authors: Harish Varadarajan, Emily Goldman, Tony Zheng Yu, Rohan Ghotra (computer vision)
      * Purpose: autonomous program for FTC Skystone
-     * Iteration 5 (revised and split strategies)
+     * Iteration 5
      */
     private ElapsedTime runtime = new ElapsedTime();
     // declare motors for mapping
@@ -47,7 +47,7 @@ public class Autonomous extends LinearOpMode {
             rearLeftMotor.setPower(0);
             rearRightMotor.setPower(0);
         }
-        if (isInchOrDeg.equals("strafe")) {
+        if (isInchOrDeg.equals("strafeRight")) {
             frontLeftMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
             rearLeftMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
             frontRightMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
@@ -56,6 +56,21 @@ public class Autonomous extends LinearOpMode {
             frontRightMotor.setPower(power);
             rearRightMotor.setPower(-power);
             rearLeftMotor.setPower(power);
+            while (frontLeftMotor.isBusy() || frontRightMotor.isBusy() || rearLeftMotor.isBusy() || rearRightMotor.isBusy());
+            frontLeftMotor.setPower(0);
+            frontRightMotor.setPower(0);
+            rearLeftMotor.setPower(0);
+            rearRightMotor.setPower(0);
+        }
+        if (isInchOrDeg.equals("strafeLeft")) {
+            frontLeftMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            rearLeftMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            frontRightMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            rearRightMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            frontLeftMotor.setPower(power);
+            frontRightMotor.setPower(-power);
+            rearRightMotor.setPower(power);
+            rearLeftMotor.setPower(-power);
             while (frontLeftMotor.isBusy() || frontRightMotor.isBusy() || rearLeftMotor.isBusy() || rearRightMotor.isBusy());
             frontLeftMotor.setPower(0);
             frontRightMotor.setPower(0);
@@ -98,71 +113,38 @@ public class Autonomous extends LinearOpMode {
             idle();
         }
     }
-    private void Red1() {
+    private void deliverBlocks() {
         //unclamp - just to be safe - and then drive toward and grab a block
         clamp.setPosition(1);
-        drive(0.6, 12, "inchForward");
+        drive(0.4, 12, "inchForward");
+        
+        
+        //Rohan - add scanning here
         clamp.setPosition(0.15);
         drive(-0.6, 16, "inchForward");
         drive(1, 90, "leftDegree");
-        //cross alliance bridge and drop block onto foundation (assuming other team moved foundation to parking zone)
+        //cross alliance bridge and drop block onto foundation (assuming ally moved foundation to parking zone)
         drive(0.6, 54, "inchForward");
-        riseArm(0.3, 3);
-        // put elevator2
+        //add scan here if you think that we should not assume that the ally moved the foundation
+        riseArm(0.3, 2);
         clamp.setPosition(0.8);
-        //park under alliance bridge
-        drive(-0.6, 26, "inchForward");
-        idle();
-    }
-    private void Red2() {
-        //unclamp - just to be safe - and then drive toward and grab the foundation
-        clamp.setPosition(0.8);
-        LHook.setPosition(0.5);
-        RHook.setPosition(0.5);
-        drive(0.6, 12, "inchForward");
-        LHook.setPosition(1);
-        RHook.setPosition(1);
-        //move foundation into parking zone and park under alliance bridge
-        drive(0.6, 6, "strafe");
-        drive(1, 90, "turnLeft");
-        drive(-0.6, 14, "strafe");
-        drive(0.6, 20, "inchForward");
-        LHook.setPosition(0.5);
-        RHook.setPosition(0.5);
-        drive(-0.6, 44, "inchForward");
-        idle();
-    }
-    private void Blue1() {
-        //unclamp - just to be safe - and then drive toward and grab a block
-        clamp.setPosition(0.8);
-        drive(0.6, 12, "inchForward");
+        //go for the second block
+        drive(-0.6, 54, "inchForward");
+        drive(0.6, 90, "rightDegree");
+        //lower arm in preparation to grab second block
+        riseArm(-0.3, 2);
+        drive(0.4, 12, "inchForward");
+        //Rohan - add scanning here
+        
+        
         clamp.setPosition(0.15);
         drive(-0.6, 16, "inchForward");
-        drive(1, 90, "rightDegree");
-        //cross alliance bridge and drop block onto foundation (assuming other team moved foundation to parking zone)
+        drive(1, 90, "leftDegree");
         drive(0.6, 54, "inchForward");
-        riseArm(0.3, 3);
+        riseArm(0.3, 4);
         clamp.setPosition(0.8);
         //park under alliance bridge
         drive(-0.6, 26, "inchForward");
-        idle();
-    }
-    private void Blue2() {
-        //unclamp - just to be safe - and then drive toward and grab the foundation
-        clamp.setPosition(0.8);
-        LHook.setPosition(0.5);
-        RHook.setPosition(0.5);
-        drive(0.6, 12, "inchForward");
-        LHook.setPosition(1);
-        RHook.setPosition(1);
-        //move foundation into parking zone and park under alliance bridge
-        drive(-0.6, 6, "strafe");
-        drive(1, 90, "turnRight");
-        drive(0.6, 14, "strafe");
-        drive(0.6, 20, "inchForward");
-        LHook.setPosition(0.5);
-        RHook.setPosition(0.5);
-        drive(-0.6, 44, "inchForward");
         idle();
     }
     //initialize
@@ -213,10 +195,7 @@ public class Autonomous extends LinearOpMode {
         telemetry.update();
         while (opModeIsActive()) {
             telemetry.clearAll();
-            if (gamepad1.a) { Red1(); }
-            else if (gamepad1.b) { Red2(); }
-            else if (gamepad1.y) { Blue1(); }
-            else if (gamepad1.x) { Blue2(); }
+            deliverBlocks();
         }
     }
 }
