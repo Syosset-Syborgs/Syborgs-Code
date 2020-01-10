@@ -9,9 +9,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 public class deliverBlocks_Autonomous extends LinearOpMode {
     /**
-     * Syborgs 10696 Autonomous Code 2020
+     * Syborgs 10696 Autonomous Strategy 1: deliver blocks 2020
      * Authors: Harish Varadarajan, Emily Goldman, Tony Zheng Yu, Rohan Ghotra (computer vision)
-     * Purpose: autonomous program for FTC Skystone
+     * Purpose: autonomous program for FTC Skystone: deliver 2 blocks during the 30-second Autonomous period
      * Iteration 5
      */
     private ElapsedTime runtime = new ElapsedTime();
@@ -117,19 +117,19 @@ public class deliverBlocks_Autonomous extends LinearOpMode {
         //unclamp - just to be safe - and then drive toward and grab a block
         clamp.setPosition(1);
         drive(0.4, 12, "inchForward");
-
-
         //Rohan - add scanning here
+
+
         clamp.setPosition(0.15);
         drive(-0.6, 16, "inchForward");
-        drive(1, 90, "leftDegree");
         //cross alliance bridge and drop block onto foundation (assuming ally moved foundation to parking zone)
-        drive(0.6, 54, "inchForward");
         //add scan here if you think that we should not assume that the ally moved the foundation
+        drive(0.6, 90, "strafeLeft");
+        drive(1, 90, "leftDegree");
         riseArm(0.3, 2);
         clamp.setPosition(0.8);
         //go for the second block
-        drive(-0.6, 54, "inchForward");
+        drive(-0.6, 90, "inchForward");
         drive(0.6, 90, "rightDegree");
         //lower arm in preparation to grab second block
         riseArm(-0.3, 2);
@@ -139,12 +139,12 @@ public class deliverBlocks_Autonomous extends LinearOpMode {
 
         clamp.setPosition(0.15);
         drive(-0.6, 16, "inchForward");
+        drive(0.6, 90, "strafeLeft");
         drive(1, 90, "leftDegree");
-        drive(0.6, 54, "inchForward");
         riseArm(0.3, 4);
         clamp.setPosition(0.8);
         //park under alliance bridge
-        drive(-0.6, 26, "inchForward");
+        drive(-0.6, 46, "inchForward");
         idle();
     }
     //initialize
