@@ -117,8 +117,8 @@ public class deliverBlocks_Autonomous extends LinearOpMode {
         //unclamp - just to be safe - and then drive toward and grab a block
         clamp.setPosition(1);
         drive(0.4, 12, "inchForward");
-        
-        
+
+
         //Rohan - add scanning here
         clamp.setPosition(0.15);
         drive(-0.6, 16, "inchForward");
@@ -135,8 +135,8 @@ public class deliverBlocks_Autonomous extends LinearOpMode {
         riseArm(-0.3, 2);
         drive(0.4, 12, "inchForward");
         //Rohan - add scanning here
-        
-        
+
+
         clamp.setPosition(0.15);
         drive(-0.6, 16, "inchForward");
         drive(1, 90, "leftDegree");
@@ -167,7 +167,7 @@ public class deliverBlocks_Autonomous extends LinearOpMode {
         rearLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         rearRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        elevator1.setDirection(DcMotorSimple.Direction.REVERSE);
+        elevator1.setDirection(DcMotorSimple.Direction.FORWARD);
         elevator2.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //brake when power is 0
