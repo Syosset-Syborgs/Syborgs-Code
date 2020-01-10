@@ -1,0 +1,174 @@
+//package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Autonomous", group = "Syborgs 10696")
+
+public class auto_brick extends LinearOpMode {
+    private ElapsedTime runtime = new ElapsedTime();
+    // declare motors for mapping
+    private static DcMotor frontLeftMotor, frontRightMotor, rearLeftMotor, rearRightMotor;
+    private static DcMotor arm, elevator, elevator2;
+    private static Servo LHook, RHook, clamp;
+    //encoder values
+    private static final int wheelRadius = 3, length = 18, width = 18, ticksPerRev = 1440;
+    private static final double ticksPerInches = (ticksPerRev)/(2 * Math.PI * wheelRadius), turnRadius = Math.sqrt(Math.pow((double) length / 2, 2) + Math.pow((double) width / 2,2 ));
+    private static final double circumference = (2 * Math.PI * turnRadius);
+    private void drive (double power, int inchOrDeg, String isInchOrDegStrafe) {
+        /* drive forward/backward (negative inches is driving backward) */
+        if (isInchOrDegStrafe.equals("inch")) {
+            frontLeftMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            rearLeftMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            frontRightMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            rearRightMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            frontLeftMotor.setPower(power);
+            frontRightMotor.setPower(power);
+            rearRightMotor.setPower(power);
+            rearLeftMotor.setPower(power);
+            while (frontLeftMotor.isBusy() || frontRightMotor.isBusy() || rearLeftMotor.isBusy() || rearRightMotor.isBusy());
+            frontLeftMotor.setPower(0);
+            frontRightMotor.setPower(0);
+            rearLeftMotor.setPower(0);
+            rearRightMotor.setPower(0);
+        }
+        else if (isInchOrDegStrafe.equals("leftDegree")){
+            frontLeftMotor.setTargetPosition((-inchOrDeg/360) * ((int) circumference));
+            rearLeftMotor.setTargetPosition((-inchOrDeg/360) * ((int) circumference));
+            frontRightMotor.setTargetPosition((-inchOrDeg/360) * ((int) circumference));
+            rearRightMotor.setTargetPosition((-inchOrDeg/360) * ((int) circumference));
+            // turn left IN PLACE
+            frontLeftMotor.setPower(-power);
+            frontRightMotor.setPower(power);
+            rearRightMotor.setPower(power);
+            rearLeftMotor.setPower(-power);
+            while (frontLeftMotor.isBusy() || frontRightMotor.isBusy() || rearLeftMotor.isBusy() || rearRightMotor.isBusy());
+            frontLeftMotor.setPower(0);
+            frontRightMotor.setPower(0);
+            rearLeftMotor.setPower(0);
+            rearRightMotor.setPower(0);
+        }
+        else if (isInchOrDegStrafe.equals("rightDegree")){
+            frontLeftMotor.setTargetPosition((inchOrDeg/360) * ((int) circumference));
+            rearLeftMotor.setTargetPosition((inchOrDeg/360) * ((int) circumference));
+            frontRightMotor.setTargetPosition((inchOrDeg/360) * ((int) circumference));
+            rearRightMotor.setTargetPosition((inchOrDeg/360) * ((int) circumference));
+            // turn right IN PLACE
+            frontLeftMotor.setPower(power);
+            frontRightMotor.setPower(-power);
+            rearRightMotor.setPower(-power);
+            rearLeftMotor.setPower(power);
+            while (frontLeftMotor.isBusy() || frontRightMotor.isBusy() || rearLeftMotor.isBusy() || rearRightMotor.isBusy());
+            frontLeftMotor.setPower(0);
+            frontRightMotor.setPower(0);
+            rearLeftMotor.setPower(0);
+            rearRightMotor.setPower(0);
+        }
+        else if (isInchOrDegStrafe.equals("strafeLeft")) {
+            frontLeftMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            rearLeftMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            frontRightMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            rearRightMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            frontLeftMotor.setPower(power);
+            frontRightMotor.setPower(-power);
+            rearRightMotor.setPower(power);
+            rearLeftMotor.setPower(-power);
+            while (frontLeftMotor.isBusy() || frontRightMotor.isBusy() || rearLeftMotor.isBusy() || rearRightMotor.isBusy());
+            frontLeftMotor.setPower(0);
+            frontRightMotor.setPower(0);
+            rearLeftMotor.setPower(0);
+            rearRightMotor.setPower(0);
+        }
+        else if (isInchOrDegStrafe.equals("strafeRight")) {
+            frontLeftMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            rearLeftMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            frontRightMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            rearRightMotor.setTargetPosition((int) ticksPerInches * inchOrDeg);
+            frontLeftMotor.setPower(-power);
+            frontRightMotor.setPower(power);
+            rearRightMotor.setPower(-power);
+            rearLeftMotor.setPower(power);
+            while (frontLeftMotor.isBusy() || frontRightMotor.isBusy() || rearLeftMotor.isBusy() || rearRightMotor.isBusy());
+            frontLeftMotor.setPower(0);
+            frontRightMotor.setPower(0);
+            rearLeftMotor.setPower(0);
+            rearRightMotor.setPower(0);
+        }
+        else {
+            idle();
+        }
+    }
+    //initialize
+
+    public void runOpMode() throws InterruptedException  {
+        /* map motors */
+        frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeft");
+        frontRightMotor = hardwareMap.get(DcMotor.class, "frontRight");
+        rearLeftMotor = hardwareMap.get(DcMotor.class, "rearLeft");
+        rearRightMotor = hardwareMap.get(DcMotor.class, "rearRight");
+        // map arm
+        elevator = hardwareMap.get(DcMotor.class, "E1");
+        elevator2 = hardwareMap.get(DcMotor.class, "E2");
+        arm = hardwareMap.get(DcMotor.class, "arm");
+        clamp = hardwareMap.get(Servo.class, "clamp");
+        LHook = hardwareMap.get(Servo.class, "leftHook");
+        RHook = hardwareMap.get(Servo.class, "rightHook");
+
+        frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        rearLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        rearRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        elevator.setDirection(DcMotorSimple.Direction.REVERSE);
+        elevator2.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        // run encoders for motors
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rearLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rearRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        // reset encoders for motors
+        frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rearLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rearRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        waitForStart();
+        runtime.reset();
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
+        while (opModeIsActive()) {
+            telemetry.clearAll();
+            clamp.setPosition(0);
+            drive(0.6, 36, "inch");
+            //drive(0.6, 90, "rightDegree");
+            //computer vison goes here
+            clamp.setPosition(1);
+            drive(-0.6, -20, "inch");
+            drive(0.6, 90, "strafeLeft");
+            clamp.setPosition(0);
+            drive(0.6, 50, "strafeRight");
+            ///drive(0.6, 90, "rightDegree");
+            drive(0.6, 36, "inch");
+            //computer vision goes here
+            clamp.setPosition(1);
+            drive(-0.6, -36, "inch");
+            drive(0.6, 90, "strafeLeft");
+            ///drive(0.6, 90, "leftDegree");
+            
+            clamp.setPosition(0);
+            //parking under alliance bridge
+            drive(0.6, 30, "strafeRight");
+            idle();
+        }
+    }
+}
+
+
+
+
+
+
+
+
