@@ -28,6 +28,9 @@ class Arcs extends LinearOpMode {
     
   }
   
+  void arc(double arc, double degrees) {
+    
+  }
   
   /**
    * z - forward +, backwards -
@@ -36,10 +39,10 @@ class Arcs extends LinearOpMode {
    */
   void drive(char axis, double value, double speed) {
     
-    int fl = FL.getTargetPosition() + (axis == 'y' ? value / 360 * TURN_RADIUS / 2 * TICKS_PER_INCH : value * TICKS_PER_INCH);
-    int fr = FR.getTargetPosition() + (axis == 'y' ? -value / 360 * TURN_RADIUS / 2 * TICKS_PER_INCH : value * TICKS_PER_INCH * (axis == 'x' ? -1 : 1));
-    int bl = BL.getTargetPosition() + (axis == 'y' ? value / 360 * TURN_RADIUS / 2 * TICKS_PER_INCH : value * TICKS_PER_INCH * (axis == 'x' ? -1 : 1));
-    int br = BR.getTargetPosition() + (axis == 'y' ? -value / 360 * TURN_RADIUS / 2 * TICKS_PER_INCH : value * TICKS_PER_INCH);
+    int fl = FL.getTargetPosition() + (int) (axis == 'y' ? value / 360 * TURN_RADIUS / 2 * TICKS_PER_INCH : value * TICKS_PER_INCH);
+    int fr = FR.getTargetPosition() + (int) (axis == 'y' ? -value / 360 * TURN_RADIUS / 2 * TICKS_PER_INCH : value * TICKS_PER_INCH * (axis == 'x' ? -1 : 1));
+    int bl = BL.getTargetPosition() + (int) (axis == 'y' ? value / 360 * TURN_RADIUS / 2 * TICKS_PER_INCH : value * TICKS_PER_INCH * (axis == 'x' ? -1 : 1));
+    int br = BR.getTargetPosition() + (int) (axis == 'y' ? -value / 360 * TURN_RADIUS / 2 * TICKS_PER_INCH : value * TICKS_PER_INCH);
     
     FL.setTargetPosition(fl);
     FR.setTargetPosition(fr);
