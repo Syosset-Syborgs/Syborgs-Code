@@ -28,7 +28,11 @@ class Arcs extends LinearOpMode {
     
   }
   
-  void arc(double arc, double degrees) {
+  void arc(double radius, double degrees, double speed, char dir) {
+    
+    double ratio = (radius + WIDTH/2) / (radius - WIDTH/2);
+    double leftSpeed = speed;
+    double rightSpeed = radius
     
   }
   
