@@ -37,8 +37,8 @@ public class FieldCentricDrive extends LinearOpMode {
         // to do that in each of the three items that need that info, as that's
         // three times the necessary expense.
         angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        }
-      });
+      }
+    });
     double angle = 0;
     
     waitForStart();
