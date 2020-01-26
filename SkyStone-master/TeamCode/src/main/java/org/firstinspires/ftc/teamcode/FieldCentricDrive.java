@@ -26,7 +26,7 @@ public class FieldCentricDrive extends LinearOpMode {
     while (opModeIsActive()) {
       
       double LY = -gamepad1.left_stick_y * Math.cos(Math.toRadians(angle));
-      double LX = gamepad1.left_stick_x * Mathsin(Math.toRadians(angle));
+      double LX = gamepad1.left_stick_x * Math.sin(Math.toRadians(angle));
       double RX = gamepad1.right_stick_x;
       
       FL.setPower(LY + LX + RX);
