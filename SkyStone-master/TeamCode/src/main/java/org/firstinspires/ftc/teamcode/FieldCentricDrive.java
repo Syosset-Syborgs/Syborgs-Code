@@ -23,6 +23,15 @@ public class FieldCentricDrive extends LinearOpMode {
     
     while (opModeIsActive()) {
       
+      double LY = -gamepad1.left_stick_y;
+      double LX = gamepad1.left_stick_x;
+      double RX = gamepad1.right_stick_x;
+      
+      FL.setPower(LY + LX + RX);
+      FR.setPower(LY - LX - RX);
+      BL.setPower(LY - LX + RX);
+      BR.setPower(LY + LX - RX);
+      
     }
     
   }
