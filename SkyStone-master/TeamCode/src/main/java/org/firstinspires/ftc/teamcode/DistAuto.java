@@ -8,6 +8,9 @@ public class DistAuto {
   ColorSensor cs;
   BNO055IMU imu;
   
+  final double LENGTH = 14.5, WIDTH = 15.5, TICKS_PER_REV = 383.6, WHEEL_RADIUS = 2, TICKS_PER_INCH = TICKS_PER_REV / (2 * Math.PI *
+        WHEEL_RADIUS), TICKS_PER_DEGREE = TICKS_PER_REV / 360, TURN_RADIUS = Math.sqrt(Math.pow(LENGTH / 2, 2) + Math.pow(WIDTH / 2, 2));
+  
   @Override
   public void runOpMode() throws InterruptedException {
     
@@ -29,7 +32,45 @@ public class DistAuto {
     cs = hardwareMap.get(ColorSensor.class, "cs");
     imu = hardwareMap.get(BNO055IMU.class, "imu");
     
+    BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+    parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+    parameters.calibrationDataFile = "BNO055IMUCalibration.json";
+    parameters.loggingEnabled = true;
+    parameters.loggingTag = "IMU";
+    
+    imu.initialize(parameters);
+    
+    Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+    telemetry.addAction(new Runnable() {
+      @Override public void run() {
+        // Acquiring the angles is relatively expensive; we don't want
+        // to do that in each of the three items that need that info, as that's
+        // three times the necessary expense.
+        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+      }
+    });
+    
     waitForStart();
+    
+  }
+  
+  void turnToAngle(double target) {
+    
+    telemetry.update();
+    
+    while (opModeIsActive() && (angles.firstAngle < target - .1 || angles.firstAngle > target + .1)) {
+      telemetry.update();
+      FL.setPower(-(angles.firstAngle - target)/90);
+      FR.setPower((angles.firstAngle - target)/90);
+      BL.setPower(-(angles.firstAngle - target)/90);
+      BR.setPower((angles.firstAngle - target)/90);
+      telemetry.update();
+    }
+    
+    FL.setPower(0);
+    FR.setPower(0);
+    BL.setPower(0);
+    BR.setPower(0);
     
   }
   
