@@ -1,4 +1,4 @@
-/**
+]/**
  * Purpose - Our first TeleOp code; will be used at Scrimmage.
  * Revision History:
  *      - 1: 11/6/19
@@ -15,66 +15,77 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.CRServo;
 
 
 //@Disabled
-public class TeleOp extends OpMode
+public class Syborgs_TeleOp extends OpMode
 {
     //Drive System
-    private static DcMotor FL, FR, BL, BR;
+    private static DcMotor FL, FR, BL, BR, MTMotor;
     private double LY, RY, LT, RT;
+    private static Servo claw;
 
     //Variables for reversing driving controls
     private boolean driveBackwards = false;
     private ElapsedTime eTime = new ElapsedTime();
 
     //Intake System
-    private static DcMotor LIntake, RIntake;
+
 
     //Arm system
     private static DcMotor elevator, elevator2;
-    private CRServo dropIntake, clamp;
+    private CRServo AutonomousArm;
     private double elevate, clampOpen;
 
     @Override
     public void init()
     {
-        //Mapping drive system hardware
-        FL = hardwareMap.dcMotor.get("FL");
-        FR = hardwareMap.dcMotor.get("FR");
-        BL = hardwareMap.dcMotor.get("BL");
-        BR = hardwareMap.dcMotor.get("BR");
-        elevator2 = hardwareMap.dcMotor.get("E2");
-        elevator = hardwareMap.dcMotor.get("E1");
+        //Mapping drive system hardware (authors Tony and Harish do not have access to the RC, and therefore, they do not know the names. Please provide the missing details)
+        MTMotor = hardwareMap.dcMotor.get("type name here");
+        FL = hardwareMap.dcMotor.get("type name here");
+        FR = hardwareMap.dcMotor.get("type name here");
+        BL = hardwareMap.dcMotor.get("type name here");
+        BR = hardwareMap.dcMotor.get("type name here");
+        elevator2 = hardwareMap.dcMotor.get("type name here");
+        elevator = hardwareMap.dcMotor.get("type name here");
+        claw = hardwareMap.get(Servo.class, "type name here");
+        AutonomousArm = hardwareMap.get(CRServo.class, "type name here");
+
+
+
+
 
         //Reverse one wheel side
+
         FL.setDirection(DcMotorSimple.Direction.FORWARD);
         BL.setDirection(DcMotorSimple.Direction.FORWARD);
         FR.setDirection(DcMotorSimple.Direction.REVERSE);
         BR.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //Immediately stop
+
         FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //Mapping intake system hardware
-        LIntake = hardwareMap.dcMotor.get("left_intake");
-        RIntake = hardwareMap.dcMotor.get("right_intake");
+
 
         elevator.setDirection(DcMotorSimple.Direction.REVERSE);
         elevator2.setDirection(DcMotorSimple.Direction.REVERSE);
-        
+
 
         //Immediately stop
         elevator.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         elevator2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //Mapping intake system hardware
-        
-      
-        clamp = hardwareMap.crservo.get("clamp");
+
+
+
 
     }
 
@@ -131,34 +142,34 @@ public class TeleOp extends OpMode
         BR.setPower(RY - LT + RT);
 
         //Controller 2 inputs
-        clamp.setPower(-gamepad2.right_stick_y);
+
         elevator.setPower(-gamepad2.left_stick_y);
+        elevator2.setPower(-gamepad2.left_stick_y);
 
         //Intake control
         if(gamepad2.a)
         {
-            elevator.setPower(1);
-          
-            elevator2.setPower(1);
-            
+            elevator.setPower(-0.3);
+
+            elevator2.setPower(-0.3);
+
         }
-        else
+        else if (gamepad2.b)
         {
-            elevator.setPower(0);
-          
-            elevator2.setPower(0);
-            
+            elevator.setPower(0.3);
+
+            elevator2.setPower(0.3);
         }
 
         //Small movements with the Arm Controller's dpad; useful for minor adjustments
-        if(gamepad2.dpad_up)
+        if(gamepad1.dpad_up)
         {
             FL.setPower(.4);
             FR.setPower(.4);
             BL.setPower(.4);
             BR.setPower(.4);
         }
-        else if(gamepad2.dpad_down)
+        else if(gamepad1.dpad_down)
         {
             FL.setPower(-.4);
             FR.setPower(-.4);
@@ -172,13 +183,40 @@ public class TeleOp extends OpMode
             BL.setPower(-.4);
             BR.setPower(.4);
         }
-        else if(gamepad2.dpad_right)
+        else if(gamepad1.dpad_right)
         {
             FL.setPower(.4);
             FR.setPower(-.4);
             BL.setPower(.4);
             BR.setPower(-.4);
         }
+        if (gamepad2.x) {
+            MTMotor.setPower(0.3);
+        }
+        else if (gamepad2.y) {
+            MTMotor.setPower(-0.3);
+        }
+        if (gamepad2.left_bumper)
+        {
+            claw.setPosition(0); //Test the values
+        }
+        //Servo close Position
+        else if (gamepad2.right_bumper)
+        {
+            claw.setPosition(.5); //Test the values
+        }
+        if (gamepad2.dpad_up)
+        {
+            AutonomousArm.setPower(0.3); //Test the values
+        }
+        //Servo close Position
+        else if (gamepad2.dpad_down)
+        {
+            AutonomousArm.setPower(-0.3); //Test the values
+        }
+
     }
 
 }
+
+
