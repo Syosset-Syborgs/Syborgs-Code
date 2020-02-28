@@ -198,12 +198,12 @@ public class Syborgs_TeleOp extends OpMode
         }
         if (gamepad2.left_bumper)
         {
-            claw.setPosition(0); //Test the values
+            claw.setPosition(1); //Test the values
         }
         //Servo close Position
         else if (gamepad2.right_bumper)
         {
-            claw.setPosition(.5); //Test the values
+            claw.setPosition(-1); //Test the values
         }
         if (gamepad2.dpad_up)
         {
