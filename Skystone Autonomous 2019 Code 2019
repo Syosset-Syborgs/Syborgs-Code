@@ -22,12 +22,12 @@ import java.util.ArrayList;
 
 
 
-public class VuforiaCode extends LinearOpMode{
+public class VuforiaCode extends LinearOpMode {
    private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
-   private static final boolean PHONE_IS_PORTRAIT = false  ;
+   private static final boolean PHONE_IS_PORTRAIT = false;
    private static VuforiaLocalizer.CameraDirection cameraDir;
    private static String trackablesFile;
-   private static final float mmPerInch        = 25.4f;
+   private static final float mmPerInch = 25.4f;
    private static final float stoneZ = 2.00f * mmPerInch;
    WebcamName webcamName;
    VuforiaTrackables visionTargets;
@@ -35,6 +35,7 @@ public class VuforiaCode extends LinearOpMode{
    OpenGLMatrix lastKnownLocation;
    OpenGLMatrix phoneLocation;
    VuforiaTrackableDefaultListener listener;
+   private OpenGLMatrix lastLocation = null;
    private VuforiaLocalizer vuforia;
    private static final float bridgeZ = 6.42f * mmPerInch;
    private static final float bridgeY = 23 * mmPerInch;
@@ -44,17 +45,18 @@ public class VuforiaCode extends LinearOpMode{
 
    // Constants for perimeter targets
    private static final float halfField = 72 * mmPerInch;
-   private static final float quadField  = 36 * mmPerInch;
-   private static final float mmTargetHeight   = (6) * mmPerInch;
+   private static final float quadField = 36 * mmPerInch;
+   private static final float mmTargetHeight = (6) * mmPerInch;
 
    public OpenGLMatrix createMatrix(float x, float y, float z, float u, float v, float w) {
        return OpenGLMatrix.translation(x, y, z).multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES, u, v, w));
    }
-   public String formatMatrix (OpenGLMatrix matrix){
+
+   public String formatMatrix(OpenGLMatrix matrix) {
        return matrix.formatAsTransform();
    }
-   public void FtcVuforia()
-   {
+
+   public void FtcVuforia() {
        this.cameraDir = cameraDir;
        //
        // If no camera view ID, do not activate camera monitor view to save power.
@@ -128,7 +130,7 @@ public class VuforiaCode extends LinearOpMode{
 
        front1.setLocation(OpenGLMatrix
                .translation(-halfField, -quadField, mmTargetHeight)
-               .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
+               .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 90)));
 
        front2.setLocation(OpenGLMatrix
                .translation(-halfField, quadField, mmTargetHeight)
@@ -144,7 +146,7 @@ public class VuforiaCode extends LinearOpMode{
 
        rear1.setLocation(OpenGLMatrix
                .translation(halfField, quadField, mmTargetHeight)
-               .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
+               .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
 
        rear2.setLocation(OpenGLMatrix
                .translation(halfField, -quadField, mmTargetHeight)
@@ -152,6 +154,9 @@ public class VuforiaCode extends LinearOpMode{
        target.setLocation(OpenGLMatrix
                .translation(0, 0, stoneZ)
                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+       float phoneYRotate = 0;
+       float phoneXRotate = 0;
+       float phoneZRotate = 0;
        if (CAMERA_CHOICE == BACK) {
            phoneYRotate = -90;
        } else {
@@ -160,62 +165,73 @@ public class VuforiaCode extends LinearOpMode{
 
        // Rotate the phone vertical about the X axis if it's in portrait mode
        if (PHONE_IS_PORTRAIT) {
-           phoneXRotate = 90 ;
+           phoneXRotate = 90;
        }
 
 
-
-       final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot-center
+       final float CAMERA_FORWARD_DISPLACEMENT = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot-center
        final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
-       final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
+       final float CAMERA_LEFT_DISPLACEMENT = 0;     // eg: Camera is ON the robot's center line
 
        OpenGLMatrix robotFromCamera = OpenGLMatrix
                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
-       for (VuforiaTrackable trackable : allTrackables) {
-           ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, params.cameraDirection);
-       }
+       while (!isStopRequested()) {
+           for (VuforiaTrackable trackable : allTrackables) {
+               ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, params.cameraDirection);
+               if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
+                   telemetry.addData("Visible Target", trackable.getName());
+                   boolean targetVisible = true;
 
-
-
-       phoneLocation = createMatrix(0,225,0,90,0,0);
-       listener = (VuforiaTrackableDefaultListener) target.getListener();
-       listener.setPhoneInformation(phoneLocation, params.cameraDirection);
-
-   }
-   private float robotX = 0;
-   private float robotY = 0;
-   private float robotAngle = 0;
-   private float phoneYRotate    = 0;
-   private float phoneXRotate    = 0;
-   private float phoneZRotate    = 0;
-   public void runOpMode() {
-       webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
-       int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-       VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-       parameters.cameraDirection = CAMERA_CHOICE;
-       FtcVuforia();
-       lastKnownLocation = createMatrix(0,0,0,0,0,0);
-       waitForStart();
-       visionTargets.activate();
-       Vuforia.setHint(HINT.HINT_MAX_SIMULTANEOUS_IMAGE_TARGETS, 4);
-       while (opModeIsActive()) {
-           OpenGLMatrix latestLocation = listener.getUpdatedRobotLocation();
-           if (latestLocation != null) {
-               lastKnownLocation = latestLocation;
+                   // getUpdatedRobotLocation() will return null if no new information is available since
+                   // the last time that call was made, or if the trackable is not currently visible.
+                   OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
+                   if (robotLocationTransform != null) lastLocation = robotLocationTransform;
+                   break;
+               }
            }
-           float [] coordinates = lastKnownLocation.getTranslation().getData();
-           robotX = coordinates[0];
-           robotY = coordinates[1];
-           robotAngle = Orientation.getOrientation(lastKnownLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
-           telemetry.addData("Tracking" + target.getName(), listener.isVisible());
-           telemetry.addData("Last Known Location", formatMatrix(lastKnownLocation));
+
+
+           phoneLocation = createMatrix(0, 225, 0, 90, 0, 0);
+           listener = (VuforiaTrackableDefaultListener) target.getListener();
+           listener.setPhoneInformation(phoneLocation, params.cameraDirection);
+
        }
+       float robotX = 0;
+       float robotY;
+       robotY = 0;
+       float robotAngle = 0;
+       boolean targetVisible = false;
+
+       public void runOpMode() throws InterruptedException {
+           webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
+           int cameraMonitorViewId;
+           cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+           VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+           parameters.cameraDirection = CAMERA_CHOICE;
+           FtcVuforia();
+           lastKnownLocation = createMatrix(0, 0, 0, 0, 0, 0);
+           waitForStart();
+           visionTargets.activate();
+           Vuforia.setHint(HINT.HINT_MAX_SIMULTANEOUS_IMAGE_TARGETS, 4);
+           while (opModeIsActive()) {
+               OpenGLMatrix latestLocation = listener.getUpdatedRobotLocation();
+               if (latestLocation != null) {
+                   lastKnownLocation = latestLocation;
+               }
+               float[] coordinates = lastKnownLocation.getTranslation().getData();
+               robotX = coordinates[0];
+               robotY = coordinates[1];
+               robotAngle = Orientation.getOrientation(lastKnownLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
+               telemetry.addData("Tracking" + target.getName(), listener.isVisible());
+               telemetry.addData("Last Known Location", formatMatrix(lastKnownLocation));
+           }
+
+
+       }
+
+
    }
-
-
 }
-
-
 
 
