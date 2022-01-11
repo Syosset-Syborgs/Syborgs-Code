@@ -6,12 +6,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.CRServo;
 
-@TeleOp(name="Syborgs TeleOp", group="")
-public class Syborgs_TeleOp_2022 extends OpMode {
+@TeleOp(name="Sybo", group="")
+public class Sybo extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor FL, FR, RL, RR, arm, carousel;
-    private CRServo intake, hand;
+    private DcMotor FL, FR, RL, RR, arm;
 
     public void init() {
         FL = hardwareMap.get(DcMotor.class, "Front Left");
@@ -19,9 +18,6 @@ public class Syborgs_TeleOp_2022 extends OpMode {
         RL = hardwareMap.get(DcMotor.class, "Rear Left");
         RR = hardwareMap.get(DcMotor.class, "Rear Right");
         arm = hardwareMap.get(DcMotor.class, "arm");
-        carousel = hardwareMap.get(DcMotor.class, "spin");
-        intake = hardwareMap.get(CRServo.class, "intake");
-        hand = hardwareMap.get(CRServo.class, "hand");
 
         FR.setDirection(DcMotor.Direction.REVERSE);
         RR.setDirection(DcMotor.Direction.REVERSE);
@@ -39,16 +35,6 @@ public class Syborgs_TeleOp_2022 extends OpMode {
             arm.setPower(0.4);
         } else if (gamepad1.dpad_down) {
             arm.setPower(-0.4);
-        }
-
-        if (gamepad2.right_bumper) {
-            intake.setPower(0.4);
-        }
-        if (gamepad2.left_bumper) {
-            hand.setPower(0.4);
-        }
-        if (gamepad2.a) {
-            carousel.setPower(0.7);
         }
     }
 }
