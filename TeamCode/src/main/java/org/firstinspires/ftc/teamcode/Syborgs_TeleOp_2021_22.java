@@ -40,8 +40,14 @@ public class Syborgs_TeleOp_2021_22 extends OpMode {
             arm.setPower(-0.4);
         }
 
-        if (gamepad1.right_bumper) {
+        if (gamepad2.right_bumper) {
             intake.setPower(0.4);
+        }
+        if (gamepad2.left_bumper) {
+            hand.setPower(0.4);
+        }
+        if (gamepad2.a) {
+            carousel.setPower(0.7);
         }
     }
 
