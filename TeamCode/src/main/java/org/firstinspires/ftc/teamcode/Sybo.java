@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import java.util.concurrent.TimeUnit;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -36,6 +37,22 @@ public class Sybo extends OpMode {
             arm.setPower(0.4);
         } else if (gamepad1.dpad_down) {
             arm.setPower(-0.4);
+        }
+        if (gamepad1.a) {
+            for (int i = 0; i < 8; i++) {
+                arm.setPower(0.8);
+                try {
+                    TimeUnit.MILLISECONDS.sleep(350);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                arm.setPower(-0.8);
+                try {
+                    TimeUnit.MILLISECONDS.sleep(350);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }
