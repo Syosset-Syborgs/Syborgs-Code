@@ -10,14 +10,15 @@ import com.qualcomm.robotcore.hardware.CRServo;
 public class Sybo extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor FL, FR, RL, RR, arm;
+    private DcMotor FL, FR, RL, RR;
+    private CRServo arm;
 
     public void init() {
         FL = hardwareMap.get(DcMotor.class, "Front Left");
         FR = hardwareMap.get(DcMotor.class, "Front Right");
         RL = hardwareMap.get(DcMotor.class, "Rear Left");
         RR = hardwareMap.get(DcMotor.class, "Rear Right");
-        arm = hardwareMap.get(DcMotor.class, "arm");
+        arm = hardwareMap.get(CRServo.class, "arm");
 
         FR.setDirection(DcMotor.Direction.REVERSE);
         RR.setDirection(DcMotor.Direction.REVERSE);
