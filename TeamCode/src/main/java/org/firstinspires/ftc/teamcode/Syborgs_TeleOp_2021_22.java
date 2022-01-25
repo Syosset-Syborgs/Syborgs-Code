@@ -23,8 +23,8 @@ public class Syborgs_TeleOp_2022 extends OpMode {
         intake = hardwareMap.get(CRServo.class, "intake");
         hand = hardwareMap.get(CRServo.class, "hand");
 
-        FR.setDirection(DcMotor.Direction.REVERSE);
-        RR.setDirection(DcMotor.Direction.REVERSE);
+        FL.setDirection(DcMotor.Direction.REVERSE);
+        RL.setDirection(DcMotor.Direction.REVERSE);
 
         telemetry.addData("Status", "Initialised");
     }
