@@ -41,12 +41,12 @@ public class Odometry
         encoderLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         encoderLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        encoderRight = hardwareMap.dcMotor.get("encoderLeft");
+        encoderRight = hardwareMap.dcMotor.get("encoderRight");
         encoderRight.setDirection(DcMotorSimple.Direction.FORWARD);
         encoderRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         encoderRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        encoderAux = hardwareMap.dcMotor.get("encoderLeft");
+        encoderAux = hardwareMap.dcMotor.get("encoderAux");
         encoderAux.setDirection(DcMotorSimple.Direction.FORWARD);
         encoderAux.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         encoderAux.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
