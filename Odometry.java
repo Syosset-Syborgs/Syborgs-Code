@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Odometry
 {
-    final static double L = 10; // distance between left and right encoder
+    final static double L = 20; // distance between left and right encoder
     final static double B = 10; // distance between midpoint of left and right and aux
     final static double inchesPerTick = 20; // inches Per Tick
 
